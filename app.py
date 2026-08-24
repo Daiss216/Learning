@@ -39,16 +39,14 @@ def screen_resume(resume_pdf, job_description):
     retriever = build_vector_store(resume_pdf)
     
     # Define agent instructions & system persona
-    system_prompt = (
-        "You are an expert HR Screening Agent. Analyze the candidate's resume context provided "
-        "and measure their alignment against the Job Description query.\n\n"
-        "Provide a structured response:\n"
-        "1. MATCH SCORE: (0 to 100)\n"
-        "2. CORE STRENGTHS: (Bullet points of matching skills/experience)\n"
-        "3. GAPS & MISSING REQUIREMENTS: (Bullet points of missing skills)\n"
-        "4. FINAL VERDICT: (Short summary statement evaluating if they should proceed)\n\n"
-        "Resume Context:\n{context}"
-    )
+    system_prompt = """You are an expert HR Screening Agent. Analyze the candidate's resume context provided and measure their alignment against the Job Description query.
+        Provide a structured response:
+        1. MATCH SCORE: (0 to 100)
+        2. CORE STRENGTHS: (Bullet points of matching skills/experience)
+        3. GAPS & MISSING REQUIREMENTS: (Bullet points of missing skills)
+        4. FINAL VERDICT: (Short summary statement evaluating if they should proceed)
+        Resume Context:
+        {context}"""
     
     prompt = ChatPromptTemplate.from_messages([
         ("system", system_prompt),
@@ -63,7 +61,7 @@ def screen_resume(resume_pdf, job_description):
 
 # ---Run a local trial---
 if __name__ == "__main__":
-    # Place a sample resume PDF in your 'resumes' folder and name it 'candidate_sample.pdf'
+    ## sample resume PDF
     sample_resume = "resumes/sample.pdf"
     
     sample_jd = """
