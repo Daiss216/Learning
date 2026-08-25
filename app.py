@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langchain_community.document_loaders import PyPDFLoader
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_classic.chains.retrieval import create_retrieval_chain
@@ -13,10 +13,10 @@ from langchain_core.prompts import ChatPromptTemplate
 #Load Environment Variables
 load_dotenv()
 
-##Initialize Groq LLM (Llama 3 70B - high-reasoning accuracy)
+##Initialize Groq LLM (gpt-oss 120b - high-reasoning accuracy)
 llm = ChatGroq(
     temperature=0.1,
-    model_name="llama3-70b-8192",
+    model_name="openai/gpt-oss-120b",
     groq_api_key=os.getenv("GROQ_API_KEY")
 )
 
@@ -38,7 +38,7 @@ def screen_resume(resume_pdf, job_description):
     """Agentic workflow to retrieve resume data and evaluate fit."""
     retriever = build_vector_store(resume_pdf)
     
-    # Define agent instructions & system persona
+    # Define agent instructions
     system_prompt = """You are an expert HR Screening Agent. Analyze the candidate's resume context provided and measure their alignment against the Job Description query.
         Provide a structured response:
         1. MATCH SCORE: (0 to 100)
@@ -58,6 +58,7 @@ def screen_resume(resume_pdf, job_description):
     
     response = rag_chain.invoke({"input": f"Evaluate this resume against this job description: {job_description}"})
     return response["answer"]
+
 
 # ---Run a local trial---
 if __name__ == "__main__":
